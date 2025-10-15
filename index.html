@@ -2,48 +2,132 @@
 <html lang="en">
 <head>
   <meta charset="utf-8"/>
-  <title>Donor-Bridge-Acceptor Triads — Paginated & Search Fixed (wrap links)</title>
+  <title>Donor-Bridge-Acceptor Triads</title>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <script src="https://unpkg.com/smiles-drawer@2.0.1/dist/smiles-drawer.min.js"></script>
-  <style>
-    body{font-family:system-ui,Segoe UI,Roboto,Arial;max-width:1100px;margin:18px auto;padding:0 12px;}
-    h1{font-size:1.4rem;margin-bottom:6px}
-    .controls{display:flex;gap:12px;margin-top:8px;flex-wrap:wrap;align-items:center}
-    .controls .group{display:flex;gap:6px;align-items:center}
-    button{padding:6px 10px;border-radius:6px;border:1px solid #bbb;background:#f6f6f6;cursor:pointer}
-    .small{font-size:0.85rem;padding:6px}
-    table{width:100%;border-collapse:collapse;margin-top:12px;font-size:0.95rem;table-layout:fixed}
-    thead th, tbody td{border:1px solid #ddd;padding:6px;text-align:left;vertical-align:middle}
-    thead th{background:#f4f4f4}
-    canvas{display:block;margin:auto}
-    /* preserve newlines and allow wrapping */
-    td.cell-display{white-space:pre-wrap; overflow-wrap:anywhere; word-break:break-word; hyphens:auto;}
-    /* ensure normal td's also break long words */
-    td{overflow-wrap:anywhere; word-break:break-word;}
 
-    /* clickable links inside cells: allow them to wrap */
-    td.cell-display a, td a {
-      color: #0645ad;
-      text-decoration: underline;
-      overflow-wrap:anywhere;
-      word-break:break-word;
-      word-break: break-word; /* some browsers */
+  <style>
+    body {
+      font-family: system-ui, Segoe UI, Roboto, Arial;
+      max-width: 1100px;
+      margin: 18px auto;
+      padding: 0 12px;
     }
 
-    /* column widths */
-    th:nth-child(1), td:nth-child(1){ width:18%; }
-    th:nth-child(2), td:nth-child(2){ width:16%; }
-    th:nth-child(3), td:nth-child(3){ width:10%; }
-    th:nth-child(4), td:nth-child(4){ width:18%; }
-    th:nth-child(5), td:nth-child(5){ width:12%; }
-    th:nth-child(6), td:nth-child(6){ width:16%; }
-    th:nth-child(7), td:nth-child(7){ width:10%; }
-    .pager{display:flex;gap:8px;align-items:center}
-    .disabled{opacity:0.45;pointer-events:none}
-    .banner{background:#fff4e6;border:1px solid #ffd8a8;padding:8px;margin:8px 0;border-radius:6px;color:#663c00}
-    input[type="search"]{padding:8px;border:1px solid #ddd;border-radius:6px;min-width:260px}
+    h1 {
+      font-size: 1.4rem;
+      margin-bottom: 6px;
+    }
+
+    .controls {
+      display: flex;
+      gap: 12px;
+      margin-top: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .controls .group {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+
+    button {
+      padding: 6px 10px;
+      border-radius: 6px;
+      border: 1px solid #bbb;
+      background: #f6f6f6;
+      cursor: pointer;
+    }
+
+    .small {
+      font-size: 0.85rem;
+      padding: 6px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 12px;
+      font-size: 0.95rem;
+      table-layout: fixed;
+    }
+
+    thead th,
+    tbody td {
+      border: 1px solid #ddd;
+      padding: 6px;
+      text-align: left;
+      vertical-align: middle;
+    }
+
+    thead th {
+      background: #f4f4f4;
+    }
+
+    canvas {
+      display: block;
+      margin: auto;
+    }
+
+    td.cell-display {
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+      hyphens: auto;
+    }
+
+    td {
+      overflow-wrap: anywhere;
+      word-break: break-word;
+    }
+
+    td.cell-display a,
+    td a {
+      color: #0645ad;
+      text-decoration: underline;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+    }
+
+    /* column widths (rebalanced after removing MW) */
+    th:nth-child(1), td:nth-child(1) { width: 20%; }
+    th:nth-child(2), td:nth-child(2) { width: 16%; }
+    th:nth-child(3), td:nth-child(3) { width: 18%; }
+    th:nth-child(4), td:nth-child(4) { width: 14%; }
+    th:nth-child(5), td:nth-child(5) { width: 22%; }
+    th:nth-child(6), td:nth-child(6) { width: 10%; }
+
+    .pager {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .disabled {
+      opacity: 0.45;
+      pointer-events: none;
+    }
+
+    .banner {
+      background: #fff4e6;
+      border: 1px solid #ffd8a8;
+      padding: 8px;
+      margin: 8px 0;
+      border-radius: 6px;
+      color: #663c00;
+    }
+
+    input[type="search"] {
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      min-width: 260px;
+    }
   </style>
 </head>
+
 <body>
   <h1>Donor-Bridge-Acceptor Triads</h1>
 
@@ -84,7 +168,6 @@
       <tr>
         <th>Name</th>
         <th>Structure</th>
-        <th>Molecular Weight</th>
         <th>Electrochemistry</th>
         <th>ESR</th>
         <th>References/Notes</th>
@@ -94,312 +177,349 @@
     <tbody id="tbody"></tbody>
   </table>
 
-<script>
-/* --- CONFIG --- */
-const AUTO_IMPORT_RAW_URL = "https://raw.githubusercontent.com/moisegabriel/triads/main/triads_db.csv";
+  <script>
+    const AUTO_IMPORT_RAW_URL =
+      "https://raw.githubusercontent.com/moisegabriel/triads/main/triads_db.csv";
 
-/* --- STATE --- */
-let db = [];                 // full loaded DB
-let filtered = [];           // filtered rows after search
-let currentPage = 1;
-let pageSize = 10;           // numeric or 'all'
+    let db = [];
+    let filtered = [];
+    let currentPage = 1;
+    let pageSize = 10;
 
-/* --- SMILESDRAWER --- */
-const SmilesDrawer = window.SmilesDrawer;
-const drawer = new SmilesDrawer.Drawer({width:140, height:100});
+    const drawer = new window.SmilesDrawer.Drawer({ width: 140, height: 100 });
 
-/* --- UTILS --- */
-function escapeHtml(s){ return String(s||"").replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
-function showBanner(msg){ const container=document.getElementById("bannerContainer"); container.innerHTML = `<div class="banner">${escapeHtml(msg)}</div>`; }
-function clearBanner(){ document.getElementById("bannerContainer").innerHTML = ""; }
-function propsToArray(propsStr){ if(!propsStr) return []; return propsStr.split(';').map(s=>s.trim()).filter(Boolean); }
-
-/* --- CSV PARSER (support quoted newlines) --- */
-function parseCsvRows(text){
-  const rows=[]; let cur=""; let row=[]; let inQ=false;
-  for(let i=0;i<text.length;i++){
-    const ch=text[i];
-    if(inQ){
-      if(ch==='"'){
-        if(text[i+1]==='"'){ cur+='"'; i++; } else inQ=false;
-      } else cur+=ch;
-    } else {
-      if(ch==='"'){ inQ=true; }
-      else if(ch===','){ row.push(cur); cur=""; }
-      else if(ch==='\r' || ch==='\n'){
-        if(ch==='\r' && text[i+1]==='\n') i++;
-        row.push(cur); rows.push(row); row=[]; cur="";
-      } else cur+=ch;
-    }
-  }
-  // final
-  row.push(cur); rows.push(row);
-  return rows;
-}
-
-/* --- LOAD --- */
-function looksLikeCsv(text){ if(!text) return false; const t=String(text).trim(); if(t.startsWith("<")) return false; return t.includes(",") && t.includes("\n"); }
-
-async function loadFromGithub(url){
-  try{
-    clearBanner();
-    const resp = await fetch(url, { mode: "cors" });
-    if(!resp.ok){ showBanner(`Auto-load failed: HTTP ${resp.status}`); return; }
-    const text = await resp.text();
-    if(!looksLikeCsv(text)){ showBanner("Auto-load: fetched content doesn't look like CSV (ensure raw URL)"); return; }
-    const rows = parseCsvRows(text);
-    importRowsToDb(rows);
-  } catch(err){
-    showBanner("Auto-load failed: " + (err && err.message ? err.message : String(err)));
-    console.error(err);
-  }
-}
-
-/* --- IMPORT CSV -> DB --- */
-function importRowsToDb(rows){
-  if(!rows || !rows.length){ showBanner("CSV empty"); return; }
-  const headers = rows[0].map(h => String(h||"").trim().toLowerCase());
-  db = [];
-  for(let r=1;r<rows.length;r++){
-    const cells = rows[r];
-    if(!cells || cells.every(c => (c||"").trim()==="")) continue;
-    const obj = {};
-    headers.forEach((h,j)=> obj[h] = (cells[j] !== undefined ? cells[j] : "").trim());
-    if(!obj.name) continue;
-    db.push({ name: obj.name, smiles: obj.smiles||"", props: obj.properties||obj.props||"", tags: obj.tags||"" });
-  }
-  applyFilterAndReset();
-}
-
-/* --- helper: render text that may contain URLs as clickable anchors
-     returns a DocumentFragment with text nodes and <a> nodes so wrapping rules apply
-*/
-/* Improved renderTextWithLinks:
-   - supports multiple URLs per cell
-   - trims trailing punctuation like .,;:)]}
-   - preserves trailing punctuation in the output
-   - sets a11y/title and opens links in a new tab
-*/
-function renderTextWithLinks(text){
-  const frag = document.createDocumentFragment();
-  if(!text || !String(text).length){
-    frag.appendChild(document.createTextNode(""));
-    return frag;
-  }
-  const str = String(text);
-  // Matches http:// or https:// up to whitespace or common terminators.
-  // We'll trim a trailing set of punctuation characters after the match.
-  const urlRegex = /https?:\/\/[^\s"'<>]+/gi;
-  let lastIndex = 0;
-  let m;
-  while((m = urlRegex.exec(str)) !== null){
-    const matchStart = m.index;
-    const raw = m[0];
-
-    // append text before the match
-    if(matchStart > lastIndex){
-      frag.appendChild(document.createTextNode(str.slice(lastIndex, matchStart)));
+    /* --- Helpers --- */
+    function escapeHtml(s) {
+      return String(s || "").replace(/[&<>"]/g, c =>
+        ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c])
+      );
     }
 
-    // trim trailing punctuation from the matched URL (but keep it in the output)
-    let url = raw;
-    let trailing = "";
-    // common trailing punctuation that shouldn't be part of the URL
-    const trailMatch = url.match(/([.,;:)\]\}>]+)$/);
-    if(trailMatch){
-      trailing = trailMatch[0];
-      url = url.slice(0, -trailing.length);
+    function showBanner(msg) {
+      document.getElementById("bannerContainer").innerHTML =
+        `<div class="banner">${escapeHtml(msg)}</div>`;
     }
 
-    // build anchor
-    const a = document.createElement("a");
-    a.href = url;
-    a.textContent = url;             // show full URL; we can shorten later if desired
-    a.target = "_blank";
-    a.rel = "noopener noreferrer";
-    a.title = url;
-    // CSS wrapping safety (also set in your stylesheet)
-    a.style.wordBreak = "break-word";
-    a.style.overflowWrap = "anywhere";
+    function clearBanner() {
+      document.getElementById("bannerContainer").innerHTML = "";
+    }
 
-    frag.appendChild(a);
+    function propsToArray(p) {
+      if (!p) return [];
+      return p.split(";").map(s => s.trim()).filter(Boolean);
+    }
 
-    // append any trailing punctuation as plain text
-    if(trailing) frag.appendChild(document.createTextNode(trailing));
+    /* --- CSV Parser --- */
+    function parseCsvRows(text) {
+      const rows = [];
+      let cur = "", row = [], inQ = false;
 
-    lastIndex = matchStart + raw.length;
-  }
+      for (let i = 0; i < text.length; i++) {
+        const ch = text[i];
+        if (inQ) {
+          if (ch === '"') {
+            if (text[i + 1] === '"') { cur += '"'; i++; }
+            else inQ = false;
+          } else cur += ch;
+        } else {
+          if (ch === '"') inQ = true;
+          else if (ch === ",") { row.push(cur); cur = ""; }
+          else if (ch === "\r" || ch === "\n") {
+            if (ch === "\r" && text[i + 1] === "\n") i++;
+            row.push(cur);
+            rows.push(row);
+            row = [];
+            cur = "";
+          } else cur += ch;
+        }
+      }
+      row.push(cur);
+      rows.push(row);
+      return rows;
+    }
 
-  // append remainder of string
-  if(lastIndex < str.length){
-    frag.appendChild(document.createTextNode(str.slice(lastIndex)));
-  }
-  return frag;
-}
+    function looksLikeCsv(text) {
+      if (!text) return false;
+      const t = String(text).trim();
+      if (t.startsWith("<")) return false;
+      return t.includes(",") && t.includes("\n");
+    }
 
-/* --- FILTER + PAGINATION --- */
-function applyFilterAndReset(){
-  const q = (document.getElementById("search").value || "").trim().toLowerCase();
-  if(q === ""){
-    filtered = db.slice();
-  } else {
-    filtered = db.filter(it => {
-      return (it.name||"").toLowerCase().includes(q) ||
-             (it.smiles||"").toLowerCase().includes(q) ||
-             (it.tags||"").toLowerCase().includes(q) ||
-             (it.props||"").toLowerCase().includes(q);
+    async function loadFromGithub(url) {
+      try {
+        clearBanner();
+        const resp = await fetch(url, { mode: "cors" });
+        if (!resp.ok) {
+          showBanner(`Auto-load failed: HTTP ${resp.status}`);
+          return;
+        }
+        const text = await resp.text();
+        if (!looksLikeCsv(text)) {
+          showBanner("Fetched content doesn't look like CSV (ensure raw URL)");
+          return;
+        }
+        importRowsToDb(parseCsvRows(text));
+      } catch (e) {
+        showBanner("Auto-load failed: " + (e?.message || String(e)));
+      }
+    }
+
+    /* --- Import CSV -> DB --- */
+    function importRowsToDb(rows) {
+      if (!rows || !rows.length) {
+        showBanner("CSV empty");
+        return;
+      }
+
+      const headers = rows[0].map(h => String(h || "").trim().toLowerCase());
+      db = [];
+
+      for (let r = 1; r < rows.length; r++) {
+        const cells = rows[r];
+        if (!cells || cells.every(x => (x || "").trim() === "")) continue;
+        const obj = {};
+        headers.forEach((hh, j) => (obj[hh] = (cells[j] ?? "").trim()));
+        if (!obj.name) continue;
+        db.push({
+          name: obj.name,
+          smiles: obj.smiles || "",
+          props: obj.properties || obj.props || "",
+          tags: obj.tags || ""
+        });
+      }
+      applyFilterAndReset();
+    }
+
+    /* --- Render text with hyperlinks --- */
+    function renderTextWithLinks(text) {
+      const frag = document.createDocumentFragment();
+      if (!text || !String(text).length) {
+        frag.appendChild(document.createTextNode(""));
+        return frag;
+      }
+
+      const str = String(text);
+      const urlRegex = /https?:\/\/[^\s"'<>]+/gi;
+      let lastIndex = 0, m;
+
+      while ((m = urlRegex.exec(str)) !== null) {
+        const start = m.index, raw = m[0];
+        if (start > lastIndex)
+          frag.appendChild(document.createTextNode(str.slice(lastIndex, start)));
+
+        let url = raw, trail = "";
+        const tm = url.match(/([.,;:)\]\}>]+)$/);
+        if (tm) { trail = tm[0]; url = url.slice(0, -trail.length); }
+
+        const a = document.createElement("a");
+        a.href = url;
+        a.textContent = url;
+        a.target = "_blank";
+        a.rel = "noopener noreferrer";
+        a.title = url;
+        a.style.wordBreak = "break-word";
+        a.style.overflowWrap = "anywhere";
+        frag.appendChild(a);
+
+        if (trail) frag.appendChild(document.createTextNode(trail));
+        lastIndex = start + raw.length;
+      }
+
+      if (lastIndex < str.length)
+        frag.appendChild(document.createTextNode(str.slice(lastIndex)));
+      return frag;
+    }
+
+    /* --- Filter + Pagination --- */
+    function applyFilterAndReset() {
+      const q = (document.getElementById("search").value || "").trim().toLowerCase();
+      filtered = q
+        ? db.filter(it =>
+            (it.name || "").toLowerCase().includes(q) ||
+            (it.smiles || "").toLowerCase().includes(q) ||
+            (it.tags || "").toLowerCase().includes(q) ||
+            (it.props || "").toLowerCase().includes(q)
+          )
+        : db.slice();
+      currentPage = 1;
+      renderCurrentPage();
+    }
+
+    function getTotalPages() {
+      if (pageSize === "all") return 1;
+      const sz = Number(pageSize) || 10;
+      return Math.max(1, Math.ceil(filtered.length / sz));
+    }
+
+    function renderCurrentPage() {
+      const tbody = document.getElementById("tbody");
+      tbody.innerHTML = "";
+      const totalPages = getTotalPages();
+      if (currentPage > totalPages) currentPage = totalPages;
+
+      const pageRows =
+        pageSize === "all"
+          ? filtered.slice()
+          : filtered.slice((currentPage - 1) * pageSize, currentPage * pageSize);
+
+      if (!pageRows.length) {
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;color:#666">No compounds found.</td></tr>`;
+        updatePagerDisplay();
+        return;
+      }
+
+      pageRows.forEach(it => {
+        const tr = document.createElement("tr");
+        const propsArr = propsToArray(it.props || "");
+        const p1 = propsArr[0] || "";
+        const p2 = propsArr[1] || "";
+        const p3 = propsArr[2] || "";
+
+        const tdName = document.createElement("td");
+        tdName.textContent = it.name || "—";
+
+        const tdStruct = document.createElement("td");
+        if (it.smiles && it.smiles.trim()) {
+          const c = document.createElement("canvas");
+          c.width = 140;
+          c.height = 100;
+          tdStruct.appendChild(c);
+          try {
+            SmilesDrawer.parse(it.smiles, t => drawer.draw(t, c, "light", false));
+          } catch {
+            tdStruct.innerHTML = "<small style='color:#999'>invalid SMILES</small>";
+          }
+        } else {
+          tdStruct.innerHTML = "<small style='color:#666'>no structure</small>";
+        }
+
+        const tdP1 = document.createElement("td");
+        tdP1.className = "cell-display";
+        tdP1.appendChild(renderTextWithLinks(p1));
+
+        const tdP2 = document.createElement("td");
+        tdP2.className = "cell-display";
+        tdP2.appendChild(renderTextWithLinks(p2));
+
+        const tdP3 = document.createElement("td");
+        tdP3.className = "cell-display";
+        tdP3.appendChild(renderTextWithLinks(p3));
+
+        const tdTags = document.createElement("td");
+        tdTags.textContent = it.tags || "";
+
+        tr.append(tdName, tdStruct, tdP1, tdP2, tdP3, tdTags);
+        tbody.appendChild(tr);
+      });
+
+      updatePagerDisplay();
+    }
+
+    /* --- Pager UI --- */
+    function updatePagerDisplay() {
+      const totalPages = getTotalPages();
+      const pageInfo = document.getElementById("pageInfo");
+
+      if (pageSize === "all") {
+        pageInfo.textContent = `All — ${filtered.length} rows`;
+        ["first", "prev", "next", "last"].forEach(id =>
+          document.getElementById(id + "Btn").classList.add("disabled")
+        );
+      } else {
+        pageInfo.textContent = `Page ${currentPage} / ${totalPages} — ${filtered.length} rows`;
+        document.getElementById("firstBtn").classList.toggle("disabled", currentPage <= 1);
+        document.getElementById("prevBtn").classList.toggle("disabled", currentPage <= 1);
+        document.getElementById("nextBtn").classList.toggle("disabled", currentPage >= totalPages);
+        document.getElementById("lastBtn").classList.toggle("disabled", currentPage >= totalPages);
+      }
+    }
+
+    /* --- Pager controls --- */
+    document.getElementById("nextBtn").addEventListener("click", () => {
+      if (currentPage < getTotalPages()) {
+        currentPage++;
+        renderCurrentPage();
+      }
     });
-  }
-  currentPage = 1;
-  renderCurrentPage();
-}
 
-function getTotalPages(){
-  if(pageSize === 'all') return 1;
-  const sz = Number(pageSize) || 10;
-  return Math.max(1, Math.ceil(filtered.length / sz));
-}
+    document.getElementById("prevBtn").addEventListener("click", () => {
+      if (currentPage > 1) {
+        currentPage--;
+        renderCurrentPage();
+      }
+    });
 
-function renderCurrentPage(){
-  const tbody = document.getElementById("tbody");
-  tbody.innerHTML = "";
-  const totalPages = getTotalPages();
-  if(currentPage > totalPages) currentPage = totalPages;
+    document.getElementById("firstBtn").addEventListener("click", () => {
+      currentPage = 1;
+      renderCurrentPage();
+    });
 
-  let pageRows;
-  if(pageSize === 'all'){
-    pageRows = filtered.slice();
-  } else {
-    const sz = Number(pageSize) || 10;
-    const start = (currentPage - 1) * sz;
-    pageRows = filtered.slice(start, start + sz);
-  }
+    document.getElementById("lastBtn").addEventListener("click", () => {
+      currentPage = getTotalPages();
+      renderCurrentPage();
+    });
 
-  if(pageRows.length === 0){
-    tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;color:#666">No compounds found.</td></tr>`;
-    updatePagerDisplay();
-    return;
-  }
+    /* --- Page size / Search handlers --- */
+    document.getElementById("pageSize").addEventListener("change", e => {
+      const v = e.target.value;
+      pageSize = v === "all" ? "all" : Number(v) || 10;
+      currentPage = 1;
+      renderCurrentPage();
+    });
 
-  pageRows.forEach(it => {
-    const tr = document.createElement("tr");
-
-    // props parsing
-    const propsArr = propsToArray(it.props || "");
-    const mwIdx = propsArr.findIndex(p => /^mw\s*[:=]/i.test(p));
-    const mwVal = mwIdx !== -1 ? propsArr[mwIdx].replace(/^mw\s*[:=]\s*/i,"") : "";
-    const propsNoMw = propsArr.filter((p,i)=>i!==mwIdx);
-    const p1 = propsNoMw[0]||"";
-    const p2 = propsNoMw[1]||"";
-    const p3 = propsNoMw[2]||"";
-
-    const tdName = document.createElement("td"); tdName.textContent = it.name || "—";
-    const tdStruct = document.createElement("td");
-    if(it.smiles && it.smiles.trim()){
-      const canvas = document.createElement("canvas"); canvas.width=140; canvas.height=100;
-      tdStruct.appendChild(canvas);
-      try{ SmilesDrawer.parse(it.smiles, tree => drawer.draw(tree, canvas, "light", false)); } catch(e){ tdStruct.innerHTML = "<small style='color:#999'>invalid SMILES</small>"; }
-    } else {
-      tdStruct.innerHTML = "<small style='color:#666'>no structure</small>";
+    function debounce(fn, wait = 200) {
+      let t;
+      return (...a) => {
+        clearTimeout(t);
+        t = setTimeout(() => fn(...a), wait);
+      };
     }
-    const tdMw = document.createElement("td"); tdMw.textContent = mwVal;
 
-    const tdP1 = document.createElement("td"); tdP1.className="cell-display";
-    tdP1.appendChild(renderTextWithLinks(p1));
+    document.getElementById("search").addEventListener(
+      "input",
+      debounce(() => {
+        currentPage = 1;
+        applyFilterAndReset();
+      }, 150)
+    );
 
-    const tdP2 = document.createElement("td"); tdP2.className="cell-display";
-    tdP2.appendChild(renderTextWithLinks(p2));
+    /* --- Export / Help --- */
+    document.getElementById("export").addEventListener("click", () => {
+      if (!db.length) {
+        alert("No data");
+        return;
+      }
+      const rows = [["name", "smiles", "properties", "tags"]];
+      db.forEach(r =>
+        rows.push([r.name || "", r.smiles || "", r.props || "", r.tags || ""])
+      );
+      const csv = rows
+        .map(r =>
+          r.map(c => `"${String(c || "").replace(/"/g, '""')}"`).join(",")
+        )
+        .join("\n");
+      const b = new Blob([csv], { type: "text/csv" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(b);
+      a.download = "triads_db.csv";
+      a.click();
+      setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+    });
 
-    const tdP3 = document.createElement("td"); tdP3.className="cell-display";
-    tdP3.appendChild(renderTextWithLinks(p3));
-
-    const tdTags = document.createElement("td"); tdTags.textContent = it.tags || "";
-
-    tr.appendChild(tdName);
-    tr.appendChild(tdStruct);
-    tr.appendChild(tdMw);
-    tr.appendChild(tdP1);
-    tr.appendChild(tdP2);
-    tr.appendChild(tdP3);
-    tr.appendChild(tdTags);
-
-    tbody.appendChild(tr);
-  });
-
-  updatePagerDisplay();
-}
-
-/* --- PAGER UI --- */
-function getTotalPagesNumber(){
-  return getTotalPages();
-}
-function updatePagerDisplay(){
-  const totalPages = getTotalPagesNumber();
-  const pageInfo = document.getElementById("pageInfo");
-  if(pageSize === 'all'){
-    pageInfo.textContent = `All — ${filtered.length} rows`;
-    document.getElementById("firstBtn").classList.add("disabled");
-    document.getElementById("prevBtn").classList.add("disabled");
-    document.getElementById("nextBtn").classList.add("disabled");
-    document.getElementById("lastBtn").classList.add("disabled");
-  } else {
-    pageInfo.textContent = `Page ${currentPage} / ${totalPages} — ${filtered.length} rows`;
-    document.getElementById("firstBtn").classList.toggle("disabled", currentPage <= 1);
-    document.getElementById("prevBtn").classList.toggle("disabled", currentPage <= 1);
-    document.getElementById("nextBtn").classList.toggle("disabled", currentPage >= totalPages);
-    document.getElementById("lastBtn").classList.toggle("disabled", currentPage >= totalPages);
-  }
-}
-
-/* --- PAGER CONTROLS --- */
-document.getElementById("nextBtn").addEventListener("click", ()=> { if(currentPage < getTotalPagesNumber()){ currentPage++; renderCurrentPage(); }});
-document.getElementById("prevBtn").addEventListener("click", ()=> { if(currentPage > 1){ currentPage--; renderCurrentPage(); }});
-document.getElementById("firstBtn").addEventListener("click", ()=> { currentPage = 1; renderCurrentPage(); });
-document.getElementById("lastBtn").addEventListener("click", ()=> { currentPage = getTotalPagesNumber(); renderCurrentPage(); });
-
-/* --- PAGE SIZE / SEARCH HANDLERS --- */
-document.getElementById("pageSize").addEventListener("change", (e) => {
-  const v = e.target.value;
-  pageSize = (v === "all") ? 'all' : Number(v) || 10;
-  currentPage = 1;
-  renderCurrentPage();
-});
-
-// debounced search handler
-function debounce(fn, wait=200){
-  let t;
-  return (...args) => { clearTimeout(t); t = setTimeout(()=>fn(...args), wait); };
-}
-const onSearchInput = debounce(()=> { currentPage = 1; applyFilterAndReset(); }, 150);
-document.getElementById("search").addEventListener("input", onSearchInput);
-
-/* --- EXPORT / HELP --- */
-document.getElementById("export").addEventListener("click", ()=>{
-  if(!db.length){ alert("No data"); return; }
-  const rows = [["name","smiles","properties","tags"]];
-  db.forEach(r => rows.push([r.name || "", r.smiles || "", r.props || "", r.tags || ""]));
-  const csv = rows.map(r => r.map(cell => `"${String(cell||"").replace(/"/g,'""')}"`).join(",")).join("\n");
-  const blob = new Blob([csv], { type: "text/csv" });
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
-  a.download = "triads_db.csv";
-  a.click();
-  setTimeout(()=> URL.revokeObjectURL(a.href), 2000);
-});
-
-document.getElementById("help").addEventListener("click", ()=> alert(
-`Usage:
-- Page size controls how many rows are shown per page; select "All" to show everything.
-- Use Next / Prev / First / Last to navigate pages.
+    document.getElementById("help").addEventListener("click", () =>
+      alert(`Usage:
+- Page size controls how many rows per page; select "All" to show everything.
+- Use Next/Prev/First/Last to navigate.
 - Search filters rows and resets to page 1.
-- Export downloads the entire loaded database as CSV.`));
+- Export downloads the entire database as CSV.`)
+    );
 
-/* --- INIT: load from GitHub and render --- */
-window.addEventListener("load", ()=>{
-  const ps = document.getElementById("pageSize").value;
-  pageSize = (ps === "all") ? 'all' : Number(ps);
-  loadFromGithub(AUTO_IMPORT_RAW_URL);
-});
-</script>
+    /* --- Init --- */
+    window.addEventListener("load", () => {
+      const ps = document.getElementById("pageSize").value;
+      pageSize = ps === "all" ? "all" : Number(ps);
+      loadFromGithub(AUTO_IMPORT_RAW_URL);
+    });
+  </script>
 </body>
 </html>
