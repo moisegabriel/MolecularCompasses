@@ -1,15 +1,24 @@
 "name","smiles","properties","tags","created"
+"AlTPP - C60-Ph-CO2","","In 0.1 M TBAP o-DCB
+Oxidation Potential (vs. Fc):
+Eox = +0.35V
+Reduction Potential (vs. Fc):
+Ered =  -1.16V, -1.54V, -1.72V, -2.09V;PKP & AvdE report a radical pair ESR spectrum observed as a glitch in the archetypal C60 triplet spectrum. No analysis is presented.
+Data at 200K in ortho-dichlorobenzene.
+
+GM & SL failed to observe the RP in a similar diad.;PKP & AvdE paper:
+https://doi.org/10.1021/jp911937d","Diad","2025-10-16T09:16:44.564Z-na4tx5"
 "Al-TPP-PhCO2","C12=[N]3C(C=C1)=C(C4=CC=CC=C4)C5=CC=C6N5[Al]73N8C(C=CC8=C2C9=CC=CC=C9)=C(C%10=CC=CC=C%10)C(C=C%11)=[N]7C%11=C6C%12=CC=CC=C%12","In 0.1 M TBAP o-DCB
 Oxidation Potential (vs. Fc):
 Eox = +0.38V
 Reduction Potential (vs. Fc):
 Ered = -1.7V, -2.07V;Triplet state measured by GM & SL. An overlap of two triplet spectra observed.
 D = 891MHz & 899 MHz
-E/D = -0.15, +0.26;PKP paper:
+E/D = -0.15, +0.26;PKP & AvdE paper:
 https://doi.org/10.1021/jp911937d
 
 GM & DF measured triplet TA spectra","Bridge","2025-10-16T09:05:01.340Z-9r4ccg"
-"Ferrocene Fc-CO-NH-Ph","O=C([Fc])NC1=CC=CC=C1","Not discussed;Not discussed;PKP paper:
+"Ferrocene Fc-CO-NH-Ph","O=C([Fc])NC1=CC=CC=C1","Not discussed.;Not discussed.;PKP & AvdE paper:
 https://doi.org/10.1021/jp911937d","Donor","2025-10-16T08:58:56.843Z-ig1bp7"
 "Fullerene C60","C1(C=C2C3=C4C5=C6C7=C8C9=C%10C(C%11=CC(C=C2C3=C%126)=C%12C7=C%11%10)=CC%13=C9C(C8=C%145)=C%15C%16=C%13)=C4C%14=C%15C%16=C1","Sequential reduction potentials (vs. Fc) in toluene/acetonitrile (5.4 : 1)
 E1 = -0.98V
@@ -17,10 +26,13 @@ E2 = -1.37V
 E3 = -1.87V
 E4 = -2.35V
 E5 = -2.85V
-E6 = -3.26V;g = 1.99
+E6 = -3.26V;g = 1.999
 No hyperfines.
 Temperature dependent ESR linewidth (due to relaxation).;https://doi.org/10.1021/cr980017o","Acceptor","2025-10-16T08:54:35.341Z-rnmfwa"
 "Fullerene Carboxylic Acid C60-Ph-CO2","O=C(O)C(C=C1)=CC=C1C2N(C)CC34=CC5=C6C(C7=C89)=C3C%10=C8C%11=C(C=C%1042)C=C%12C%13=C%11C9=C%14C%15=C7C6=C%16C(C%17=CC(C=C%12C%13=C%18%14)=C%18C%15=C%17%16)=C5","Sequential reduction potentials (vs. Fc) in 0.1 M TBAP o-DCB.
 E1= -1.17V
 E2 = -1.57V
-E3 = -2.12V;None reported.;PKP paper: https://doi.org/10.1021/jp911937d","Acceptor","2025-10-16T08:54:35.341Z-z6meu2"
+E3 = -2.12V;GM & SL observed the triplet by ESR in a similar compound.
+D ~ 250MHz
+Archetypal C60 triplet spectrum.
+Also reported by PKP & AvdE;PKP & AvdE paper: https://doi.org/10.1021/jp911937d","Acceptor","2025-10-16T08:54:35.341Z-z6meu2"
