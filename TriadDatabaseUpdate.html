@@ -1,0 +1,588 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <title>Donor-Bridge-Acceptor Triads Update</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <script src="https://unpkg.com/smiles-drawer@2.0.1/dist/smiles-drawer.min.js"></script>
+  <style>
+    body{font-family:system-ui,Segoe UI,Roboto,Arial;max-width:1100px;margin:18px auto;padding:0 12px;}
+    h1{font-size:1.4rem;margin-bottom:6px}
+    .row{display:flex;gap:8px;align-items:center;margin-bottom:8px}
+    input[type=text]{flex:1;padding:8px;border:1px solid #ddd;border-radius:6px}
+    button{padding:8px 10px;border-radius:6px;border:1px solid #bbb;background:#f6f6f6;cursor:pointer}
+    .controls{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
+    table{width:100%;border-collapse:collapse;margin-top:12px;font-size:0.95rem}
+    th,td{border:1px solid #ddd;padding:6px;text-align:left;vertical-align:middle}
+    th{background:#f4f4f4}
+    canvas{display:block;margin:auto}
+    .small{font-size:0.85rem;padding:6px}
+    td.editable{background:#fffbe6;cursor:text}
+    .muted{color:#666}
+    textarea.prop-multiline{width:100%;min-height:60px;box-sizing:border-box;font-family:inherit;font-size:0.95rem;padding:6px}
+    .cell-display{white-space:pre-wrap} /* preserve newlines */
+  </style>
+</head>
+<body>
+<h1>Donor-Bridge-Acceptor Triads</h1>
+
+<div class="row">
+  <input id="name" type="text" placeholder="Name (required)">
+  <input id="smiles" type="text" placeholder="SMILES (optional)">
+  <button id="add">Add</button>
+</div>
+<div class="row">
+  <input id="props" type="text" placeholder="Properties">
+  <input id="tag" type="text" placeholder="Tags" style="max-width:240px">
+</div>
+
+<div class="controls">
+  <input id="search" type="text" placeholder="Search" style="min-width:260px">
+  <button id="clear" class="small">Clear DB</button>
+  <button id="export" class="small">Export CSV</button>
+  <input id="importFile" type="file" accept=".csv" class="small">
+  <button id="help" class="small">Help</button>
+</div>
+
+<table id="table">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Structure</th>
+      <th>Electrochemistry </th>
+      <th>ESR</th>
+      <th>References/notes</th>
+      <th>Tags</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody id="tbody"></tbody>
+</table>
+
+<script>
+/* STORAGE */
+const STORAGE_KEY = "triads_db";
+let db = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+
+/* SMILESDRAWER */
+const SmilesDrawer = window.SmilesDrawer;
+const drawer = new SmilesDrawer.Drawer({width:140, height:100});
+
+/* HELPERS */
+function save(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(db)); }
+function escapeHtml(s){ return String(s||"").replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+
+/* UTIL: parse props string into array (preserve order) */
+function propsToArray(propsStr){
+  if(!propsStr) return [];
+  // split on semicolon; entries themselves may contain newlines which we preserve
+  return propsStr.split(';').map(s=>s.trim()).filter(Boolean);
+}
+/* UTIL: build props string from array */
+function propsFromArray(arr){
+  return arr.map(s=>s.trim()).filter(Boolean).join(';');
+}
+
+/* Find entry index by unique id */
+function findById(id){ return db.findIndex(x => x.created === id); }
+
+/* RENDER */
+function renderTable(filter=""){
+  const tb = document.getElementById("tbody");
+  tb.innerHTML="";
+  const q = (filter||"").trim().toLowerCase();
+  const rows = db.filter(it=>{
+    if(!q) return true;
+    return (it.name||"").toLowerCase().includes(q) ||
+           (it.smiles||"").toLowerCase().includes(q) ||
+           (it.tags||"").toLowerCase().includes(q) ||
+           (it.props||"").toLowerCase().includes(q);
+  });
+  if(rows.length===0){
+    tb.innerHTML = `<tr><td colspan="8" style="text-align:center;color:#666">No compounds yet.</td></tr>`;
+    return;
+  }
+
+  rows.forEach((it, idx)=>{
+    const tr=document.createElement("tr");
+    tr.dataset.id = it.created;
+
+    // Parse properties
+    let propsArr = propsToArray(it.props || "");
+    const mwIndex = propsArr.findIndex(p => /^mw\s*[:=]/i.test(p));
+    const mwValue = mwIndex !== -1 ? propsArr[mwIndex].replace(/^mw\s*[:=]\s*/i,"") : "";
+
+    const propsWithoutMw = propsArr.filter((p, i) => i !== mwIndex);
+    const p1 = propsWithoutMw[0] || "";
+    const p2 = propsWithoutMw[1] || "";
+    const p3 = propsWithoutMw[2] || "";
+
+    // NAME
+    const tdName = document.createElement("td");
+    tdName.textContent = it.name || "—";
+    tr.appendChild(tdName);
+
+    // STRUCTURE (optional)
+    const tdStruct = document.createElement("td");
+    if(it.smiles && it.smiles.trim()){
+      const canvas = document.createElement("canvas");
+      canvas.width = 140; canvas.height = 100;
+      tdStruct.appendChild(canvas);
+      try{
+        SmilesDrawer.parse(it.smiles, tree => { drawer.draw(tree, canvas, "light", false); });
+      } catch(e){
+        tdStruct.innerHTML = "<small style='color:#999'>invalid SMILES</small>";
+      }
+    } else {
+      tdStruct.innerHTML = "<small class='muted'>no structure</small>";
+    }
+    tr.appendChild(tdStruct);
+
+    // MW (single-line editable)
+    const tdMw = document.createElement("td");
+    tdMw.className = "editable";
+    tdMw.textContent = mwValue;
+    tdMw.tabIndex = 0;
+    tdMw.addEventListener("click", ()=> beginSingleEdit(tdMw, tr.dataset.id, "mw"));
+    tr.appendChild(tdMw);
+
+    // Property1 (multiline)
+    const tdP1 = document.createElement("td");
+    tdP1.className = "editable";
+    const disp1 = document.createElement("div");
+    disp1.className = "cell-display";
+    disp1.textContent = p1;
+    tdP1.appendChild(disp1);
+    tdP1.addEventListener("click", ()=> beginMultiEdit(tdP1, tr.dataset.id, "p1"));
+    tr.appendChild(tdP1);
+
+    // Property2 (multiline)
+    const tdP2 = document.createElement("td");
+    tdP2.className = "editable";
+    const disp2 = document.createElement("div");
+    disp2.className = "cell-display";
+    disp2.textContent = p2;
+    tdP2.appendChild(disp2);
+    tdP2.addEventListener("click", ()=> beginMultiEdit(tdP2, tr.dataset.id, "p2"));
+    tr.appendChild(tdP2);
+
+    // Property3 (multiline)
+    const tdP3 = document.createElement("td");
+    tdP3.className = "editable";
+    const disp3 = document.createElement("div");
+    disp3.className = "cell-display";
+    disp3.textContent = p3;
+    tdP3.appendChild(disp3);
+    tdP3.addEventListener("click", ()=> beginMultiEdit(tdP3, tr.dataset.id, "p3"));
+    tr.appendChild(tdP3);
+
+    // Tags (single-line editable)
+    const tdTags = document.createElement("td");
+    tdTags.className = "editable";
+    tdTags.textContent = it.tags || "";
+    tdTags.tabIndex = 0;
+    tdTags.addEventListener("click", ()=> beginSingleEdit(tdTags, tr.dataset.id, "tag"));
+    tr.appendChild(tdTags);
+
+    // Actions
+    const tdActions = document.createElement("td");
+    const delBtn = document.createElement("button");
+    delBtn.textContent = "Delete";
+    delBtn.onclick = ()=> { if(confirm("Delete this compound?")){ const i=findById(tr.dataset.id); if(i>-1){ db.splice(i,1); save(); renderTable(filter); } } };
+    tdActions.append(delBtn);
+    tr.appendChild(tdActions);
+
+    tb.appendChild(tr);
+  });
+}
+
+/* Begin editing for single-line editable cell
+   - replaces cell content with a single-line input
+   - Enter or blur -> save; Esc -> cancel
+*/
+function beginSingleEdit(td, id, field){
+  if(td._editing) return;
+  td._editing = true;
+  const original = td.textContent || "";
+  td.innerHTML = "";
+  const input = document.createElement("input");
+  input.type = "text";
+  input.value = original;
+  input.style.width = "100%";
+  input.addEventListener("keydown", (e)=> {
+    if(e.key === "Enter"){ e.preventDefault(); input.blur(); }
+    if(e.key === "Escape"){ input.value = original; input.blur(); }
+  });
+  input.addEventListener("blur", ()=> {
+    const newVal = input.value.trim();
+    saveEditedCell(id, field, newVal);
+    td._editing = false;
+  });
+  td.appendChild(input);
+  input.focus();
+  input.setSelectionRange(input.value.length, input.value.length);
+}
+
+/* Begin editing for multiline property cell
+   - swaps display div for a textarea
+   - Ctrl+Enter (or Cmd+Enter) -> save; Esc -> cancel; blur also saves
+*/
+function beginMultiEdit(td, id, field){
+  if(td._editing) return;
+  td._editing = true;
+  const displayDiv = td.querySelector(".cell-display");
+  const original = displayDiv ? displayDiv.textContent : td.textContent;
+  td.innerHTML = "";
+  const ta = document.createElement("textarea");
+  ta.className = "prop-multiline";
+  ta.value = original;
+  // keyboard: Ctrl/Cmd+Enter -> save; Esc -> cancel
+  ta.addEventListener("keydown", (e)=>{
+    const isSave = (e.key === "Enter" && (e.ctrlKey || e.metaKey));
+    if(isSave){ e.preventDefault(); ta.blur(); }
+    if(e.key === "Escape"){ ta.value = original; ta.blur(); }
+  });
+  ta.addEventListener("blur", ()=>{
+    const newVal = ta.value;
+    saveEditedCell(id, field, newVal);
+    td._editing = false;
+  });
+  td.appendChild(ta);
+  ta.focus();
+  ta.selectionStart = ta.selectionEnd = ta.value.length;
+}
+
+/* Save edited values back to DB */
+function saveEditedCell(id, field, value){
+  const idx = findById(id);
+  if(idx === -1) return;
+  const entry = db[idx];
+  let propsArr = propsToArray(entry.props || "");
+
+  const existingMwIndex = propsArr.findIndex(p => /^mw\s*[:=]/i.test(p));
+  let propsWithoutMw = propsArr.slice();
+  if(existingMwIndex !== -1) propsWithoutMw.splice(existingMwIndex, 1);
+
+  // Ensure length
+  while(propsWithoutMw.length < 3) propsWithoutMw.push("");
+
+  if(field === "mw"){
+    if(value){
+      const newArr = [`mw:${value}`].concat(propsWithoutMw.filter(Boolean));
+      entry.props = propsFromArray(newArr);
+    } else {
+      entry.props = propsFromArray(propsWithoutMw.filter(Boolean));
+    }
+  } else if(field === "tag"){
+    entry.tags = value;
+  } else if(field === "p1" || field === "p2" || field === "p3"){
+    const map = {"p1":0,"p2":1,"p3":2};
+    const pIndex = map[field];
+    propsWithoutMw[pIndex] = value;
+    const trimmed = propsWithoutMw.filter(Boolean);
+    const curMwMatch = (entry.props||"").match(/(^|;)\s*(mw\s*[:=]\s*([^;]+))/i);
+    if(curMwMatch){
+      const curMwVal = curMwMatch[2].replace(/^mw\s*[:=]\s*/i,"").trim();
+      entry.props = propsFromArray([`mw:${curMwVal}`].concat(trimmed));
+    } else {
+      entry.props = propsFromArray(trimmed);
+    }
+  }
+
+  db[idx] = entry;
+  save();
+  renderTable(document.getElementById("search").value);
+}
+
+/* ADD handling (name required) */
+document.getElementById("add").onclick=()=>{
+  const name=document.getElementById("name").value.trim();
+  const smiles=document.getElementById("smiles").value.trim();
+  const props=document.getElementById("props").value.trim();
+  const tags=document.getElementById("tag").value.trim();
+  if(!name){ alert("Name is required."); return; }
+  const created = new Date().toISOString() + "-" + Math.random().toString(36).slice(2,8);
+  db.unshift({name,smiles,props,tags,created});
+  save(); renderTable(document.getElementById("search").value);
+  document.getElementById("name").value=""; document.getElementById("smiles").value=""; document.getElementById("props").value=""; document.getElementById("tag").value="";
+};
+
+/* Search, clear, export, import, help */
+document.getElementById("search").oninput = e => renderTable(e.target.value);
+
+document.getElementById("clear").onclick = () => {
+  if(confirm("Delete ALL compounds from this browser? This cannot be undone.")){
+    db = []; save(); renderTable();
+  }
+};
+
+document.getElementById("export").onclick = () => {
+  if(db.length === 0){ alert("No data to export."); return; }
+  // Build CSV; preserve newlines by quoting fields (spreadsheet readers understand quoted newlines)
+  const rows = [["name","smiles","properties","tags","created"]];
+  db.forEach(r => rows.push([r.name||"", r.smiles||"", r.props||"", r.tags||"", r.created||""]));
+  const csv = rows.map(r => r.map(cell => `"${String(cell||"").replace(/"/g,'""')}"`).join(",")).join("\n");
+  const blob = new Blob([csv], {type:"text/csv;charset=utf-8"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a"); a.href = url; a.download = "triads_db.csv"; document.body.appendChild(a); a.click();
+  setTimeout(()=>{ URL.revokeObjectURL(url); a.remove(); }, 5000);
+};
+
+// Replace the old import handler and parseCsvLine with this code:
+
+document.getElementById("importFile").onchange = (e) => {
+  const f = e.target.files[0];
+  if(!f) return;
+  const reader = new FileReader();
+  reader.onload = (ev) => {
+    const text = ev.target.result;
+    // Parse into rows (each row is an array of cells) handling quoted newlines
+    const rows = parseCsvRows(text);
+    if(!rows || rows.length === 0){ alert("CSV empty or invalid"); return; }
+    const headers = rows[0].map(h => String(h||"").trim().toLowerCase());
+    for(let i = 1; i < rows.length; i++){
+      const cells = rows[i];
+      // skip empty rows
+      if(cells.length === 0 || cells.every(c => (c||"").trim() === "")) continue;
+      const obj = {};
+      headers.forEach((h, j) => obj[h] = cells[j] !== undefined ? cells[j] : "");
+      if(!obj.name) continue; // require name
+      const created = new Date().toISOString() + "-" + Math.random().toString(36).slice(2,8);
+      db.unshift({
+        name: obj.name || "",
+        smiles: obj.smiles || "",
+        props: obj.properties || obj.props || "",
+        tags: obj.tags || "",
+        created
+      });
+    }
+    save(); renderTable(); alert("Import finished.");
+  };
+  reader.readAsText(f);
+  e.target.value = "";
+};
+
+
+/* Robust CSV parser that returns an array of rows (each row is an array of cell strings).
+   Handles:
+    - quoted fields with "" escapes
+    - embedded commas inside quotes
+    - embedded newlines inside quotes (CR, LF or CRLF)
+*/
+function parseCsvRows(text){
+  const rows = [];
+  let cur = "";           // current cell text
+  let row = [];           // current row array
+  let i = 0;
+  let inQuotes = false;
+  while(i < text.length){
+    const ch = text[i];
+
+    if(inQuotes){
+      if(ch === '"'){
+        // Lookahead: double quote escape?
+        if(i + 1 < text.length && text[i+1] === '"'){
+          cur += '"';
+          i += 2;
+          continue;
+        } else {
+          // end of quoted field
+          inQuotes = false;
+          i++;
+          continue;
+        }
+      } else {
+        // any character (including newlines) inside quotes is part of cell
+        cur += ch;
+        i++;
+        continue;
+      }
+    } else {
+      // not in quotes
+      if(ch === '"'){
+        inQuotes = true;
+        i++;
+        continue;
+      }
+      if(ch === ','){
+        row.push(cur);
+        cur = "";
+        i++;
+        continue;
+      }
+      // handle CRLF or CR or LF as row separator
+      if(ch === '\r'){
+        // check CRLF
+        if(i+1 < text.length && text[i+1] === '\n'){
+          row.push(cur);
+          rows.push(row);
+          row = [];
+          cur = "";
+          i += 2;
+          continue;
+        } else {
+          row.push(cur);
+          rows.push(row);
+          row = [];
+          cur = "";
+          i++;
+          continue;
+        }
+      }
+      if(ch === '\n'){
+        row.push(cur);
+        rows.push(row);
+        row = [];
+        cur = "";
+        i++;
+        continue;
+      }
+      // normal character
+      cur += ch;
+      i++;
+      continue;
+    }
+  }
+  // End of input: push last cell/row
+  // If we are still inside quotes at EOF, treat it as end-of-field anyway
+  row.push(cur);
+  // If the last row is a blank line at the end (all empty cells), we can skip it later.
+  rows.push(row);
+  return rows;
+}
+
+// AUTO-IMPORT from GitHub raw only
+const AUTO_IMPORT_RAW_URL = "https://raw.githubusercontent.com/moisegabriel/MolecularCompasses/main/triads_db.csv"; // <-- paste your raw URL here
+
+/* QUICK HEURISTIC: decide whether fetched text looks like CSV (not HTML) */
+function looksLikeCsv(text){
+  if(!text) return false;
+  const trimmed = String(text).trim();
+  // If it starts with a '<' it's very likely HTML
+  if(trimmed.startsWith("<")) return false;
+  // If the sample contains both commas and newlines, it's probably CSV-ish
+  const sample = trimmed.slice(0, 2000);
+  const commaCount = (sample.match(/,/g) || []).length;
+  const newlineCount = (sample.match(/\n/g) || []).length;
+  return (commaCount >= 1 && newlineCount >= 1);
+}
+
+/* Show a non-blocking banner near the controls to explain auto-import errors.
+   This is safer than alert() and visible to the user.
+*/
+function showAutoImportError(msg){
+  console.warn("Auto-import error:", msg);
+  const bannerId = "autoImportBanner";
+  let b = document.getElementById(bannerId);
+  if(!b){
+    b = document.createElement("div");
+    b.id = bannerId;
+    b.style.background = "#fff4e6";
+    b.style.border = "1px solid #ffd8a8";
+    b.style.padding = "8px";
+    b.style.margin = "8px 0";
+    b.style.borderRadius = "6px";
+    b.style.color = "#663c00";
+    b.style.fontSize = "0.95rem";
+    // place the banner below the controls area if present
+    const controls = document.querySelector(".controls");
+    if(controls && controls.parentNode){
+      controls.parentNode.insertBefore(b, controls.nextSibling);
+    } else {
+      document.body.insertBefore(b, document.body.firstChild);
+    }
+  }
+  b.textContent = "Auto-import: " + String(msg || "failed");
+}
+
+/* Import parsed CSV rows (array of arrays) into db, using first row as headers */
+function importRowsToDb(rows){
+  if(!rows || !rows.length){ showAutoImportError("No data in CSV."); return; }
+
+  const headers = rows[0].map(h => String(h || "").trim().toLowerCase());
+  let added = 0;
+
+  for(let r = 1; r < rows.length; r++){
+    const cells = rows[r];
+    // skip fully empty row
+    if(!cells || cells.every(c => (c||"").trim() === "")) continue;
+
+    const obj = {};
+    headers.forEach((h, j) => obj[h] = (cells[j] !== undefined ? cells[j] : "").trim());
+    if(!obj.name) continue;  // require name
+
+    const created = new Date().toISOString() + "-" + Math.random().toString(36).slice(2,8);
+    db.unshift({
+      name: obj.name || "",
+      smiles: obj.smiles || "",
+      props: obj.properties || obj.props || "",
+      tags: obj.tags || "",
+      created
+    });
+    added++;
+  }
+
+  if(added > 0){
+    save();
+    renderTable();
+    alert(`Auto-import added ${added} compounds from the CSV file.`);
+  } else {
+    showAutoImportError("Auto-import completed but no valid rows were found.");
+  }
+}
+
+async function tryAutoImportFromRaw(rawUrl){
+  if(!rawUrl) return;
+  try {
+    const resp = await fetch(rawUrl, { method: "GET", mode: "cors", credentials: "omit" });
+    if(!resp.ok){
+      console.warn("Auto-import fetch returned non-OK:", resp.status, resp.statusText);
+      showAutoImportError("Auto-import failed: server returned " + resp.status);
+      return;
+    }
+    const text = await resp.text();
+    if(!looksLikeCsv(text)){
+      console.warn("Fetched content doesn't look like CSV.");
+      showAutoImportError("Auto-import fetched unexpected content. Check that the URL is the raw CSV URL.");
+      return;
+    }
+    const rows = parseCsvRows(text);
+    if(!rows || rows.length <= 1){
+      showAutoImportError("Auto-import: CSV empty or invalid.");
+      return;
+    }
+    importRowsToDb(rows);
+    console.info("Auto-import from raw URL succeeded.");
+  } catch(err){
+    console.error("Auto-import fetch error:", err);
+    showAutoImportError("Auto-import failed: " + (err && err.message ? err.message : String(err)));
+  }
+}
+
+// Run auto-import on load (non-blocking)
+window.addEventListener("load", ()=> {
+  setTimeout(()=> {
+    if( AUTO_IMPORT_RAW_URL && (AUTO_IMPORT_RAW_URL.indexOf("raw.githubusercontent.com") !== -1 || AUTO_IMPORT_RAW_URL.indexOf("gist.githubusercontent.com") !== -1) ){
+      tryAutoImportFromRaw(AUTO_IMPORT_RAW_URL);
+    } else {
+      console.info("Auto-import raw URL not configured or doesn't look like a GitHub raw/gist URL.");
+    }
+  }, 300);
+});
+
+document.getElementById("help").onclick = ()=> alert(
+`Usage:
+- Name is required; SMILES is optional.
+- All three Property columns (1–3) accept multiple lines.
+  - Click a Property cell to edit; type newlines as needed.
+  - Press Ctrl+Enter (or Cmd+Enter on Mac) to save, or click outside (blur) to save.
+  - Press Esc to cancel editing.
+- Molecular Weight is single-line editable and edits the 'mw:' property.
+- Tags are single-line editable.
+- Exported CSV quotes fields (so newlines are preserved).`);
+
+renderTable();
+</script>
+</body>
+</html>
+
