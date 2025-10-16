@@ -1,13 +1,21 @@
 "name","smiles","properties","tags","created"
+"Fc-CO-NH-Ph--AlTPP-C60-Ph-CO2","","Unclear.;No data.;PKP & AvdE paper:
+https://doi.org/10.1021/jp911937d
+
+PKP & AvdE present an energy level diagram, the lowest excited state isthe ferrocene triplet. The RP state is the next one above.
+
+Significant fluorescence quenching (sub-ns lifetime) but no TA data.","Triad","2025-10-16T10:16:35.366Z-1s5x7i"
 "AlTPP - C60-Ph-CO2","","In 0.1 M TBAP o-DCB
 Oxidation Potential (vs. Fc):
 Eox = +0.35V
 Reduction Potential (vs. Fc):
 Ered =  -1.16V, -1.54V, -1.72V, -2.09V;PKP & AvdE report a radical pair ESR spectrum observed as a glitch in the archetypal C60 triplet spectrum. No analysis is presented.
-Data at 200K in ortho-dichlorobenzene.
+Data is measured at 200K in ortho-dichlorobenzene.
 
 GM & SL failed to observe the RP in a similar diad.;PKP & AvdE paper:
-https://doi.org/10.1021/jp911937d","Diad","2025-10-16T09:16:44.564Z-na4tx5"
+https://doi.org/10.1021/jp911937d
+
+TA data reported by PKP & AvdE shows a blip at 1020nm (C60 anion). Lifetime < 100ns.","Diad","2025-10-16T09:16:44.564Z-na4tx5"
 "Al-TPP-PhCO2","C12=[N]3C(C=C1)=C(C4=CC=CC=C4)C5=CC=C6N5[Al]73N8C(C=CC8=C2C9=CC=CC=C9)=C(C%10=CC=CC=C%10)C(C=C%11)=[N]7C%11=C6C%12=CC=CC=C%12","In 0.1 M TBAP o-DCB
 Oxidation Potential (vs. Fc):
 Eox = +0.38V
