@@ -1,4 +1,11 @@
 "name","smiles","properties","tags","created"
+"TTF-py -- AlTPP -- C60-Ph-CO2","","Discussed, not reported.;Clear RP trESR spectra reported at room temperature.
+J = 1.2 mT;PKP & AvdE paper:
+https://doi.org/10.1039/C5NR01675D
+
+Charge recombination rate from nsTA of 64ns (consistent with trESR lifetime). Once more this seems to have been estimated from the decay of the TA peak at 1020nm (C60 anion).","Triad","2025-10-16T10:43:08.802Z-jfb3zm"
+"TTF-py","C1(/SC=CS1)=C2SC=C(C3=CC=NC=C3)S\2","Discussed but not reported in paper.;Not reported in this paper, but reported elsewhere for the radical cation in a RP state.;PKP & AvdE paper:
+https://doi.org/10.1039/C5NR01675D","Donor","2025-10-16T10:36:53.768Z-js9wv6"
 "Fc-CO-NH-Ph--AlTPP-C60-Ph-CO2","","Unclear.;No data.;PKP & AvdE paper:
 https://doi.org/10.1021/jp911937d
 
