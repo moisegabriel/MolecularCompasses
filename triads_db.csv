@@ -1,4 +1,9 @@
 "name","smiles","properties","tags","created"
+"NDI-Ph-CO2","CCC(CCCC)CN(C1=O)C(C2=CC=C3C4=C(C(N(C5=CC=C(C([O])=O)C=C5)C3=O)=O)C=CC1=C42)=O","Sequential reduction potentials (vs. SCE):
+E = -0.55V, -1.00V
+
+(in 0.1M TBAP/DCM);Not reported, but probably known;PKP & AvdE paper:
+https://doi.org/10.1002/chem.201202995","Acceptor","2025-10-16T11:07:57.383Z-ufduiq"
 "TTF-py -- AlTPP -- C60-Ph-CO2","","Discussed, not reported.;Clear RP trESR spectra reported at room temperature.
 J = 1.2 mT;PKP & AvdE paper:
 https://doi.org/10.1039/C5NR01675D
@@ -11,8 +16,15 @@ TTFpy-Ph(n) -- AlTPP -- C60 -Ph(m)-CO2
 With various combinations of poly-phenyl spacers Ph(n).
 
 Good candidate for MFE studies.","Triad","2025-10-16T10:43:08.802Z-jfb3zm"
-"TTF-py","C1(/SC=CS1)=C2SC=C(C3=CC=NC=C3)S\2","Discussed but not reported in paper.;Not reported in this paper, but reported elsewhere for the radical cation in a RP state.;PKP & AvdE paper:
-https://doi.org/10.1039/C5NR01675D","Donor","2025-10-16T10:36:53.768Z-js9wv6"
+"TTF-py","C1(/SC=CS1)=C2SC=C(C3=CC=NC=C3)S\2","Sequential oxidation potentials (vs. SCE)
+E = 0.48V, 0.83V
+
+(in 0.1M TBAP/DCM);Not reported in this paper, but reported elsewhere for the radical cation in a RP state.;PKP & AvdE paper:
+https://doi.org/10.1039/C5NR01675D
+
+Oxidation potentials from:
+
+https://doi.org/10.1002/chem.201202995","Donor","2025-10-16T10:36:53.768Z-js9wv6"
 "Fc-CO-NH-Ph--AlTPP-C60-Ph-CO2","","Unclear.;No data.;PKP & AvdE paper:
 https://doi.org/10.1021/jp911937d
 
