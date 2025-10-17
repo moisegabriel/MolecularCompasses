@@ -1,4 +1,37 @@
 "name","smiles","properties","tags","created"
+"TPA2-BDP-CO2 --AlTPPF3 -- C60Im","","See paper.;Not reported.;PKP paper:
+https://doi.org/10.1039/C8NR06649C
+
+The C60 acceptor is coordinated to the Al via an imidazole (Im). Th RP state is the lowest energy state in this triad (similar triads are investigated in this paper - with different BDP donors).","Triad","2025-10-17T14:29:11.476Z-5w8pc9"
+"TPA2-BDP-CO2","CC1=C2C(C3=CC=C(C(O)=O)C=C3)=C4C(C)=CC(/C=C/C5=CC=C(N(C6=CC=CC=C6)C7=CC=CC=C7)C=C5)=[N]4B(F)(F)N2C(/C=C/C8=CC=C(N(C9=CC=CC=C9)C%10=CC=CC=C%10)C=C8)=C1","(In 0.1M TBAP, o-DCB) Sequential oxidation potentials (vs. Fc):
+Eox =0.13V, 0.27V, 0.51V
+
+Reduction potentials (vs. Fc):
+Ered = -1.53V;Not reported.;PKP paper:
+https://doi.org/10.1039/C8NR06649C
+
+Other analogues: the TPA (triphenylamine) is replaced by Ph or simply BDP (boron-dipyrromethene - aka BODIPY) were also investigated in this paper.","Donor","2025-10-17T10:22:39.937Z-4q36gz"
+"PTZ-py --AlTPP-- C60-Ph-CO2","","Discussed in paper.;One figure presented in the SI. A glitch in the middle of a C60 triplet spectrum. Direct quote:
+""the absence of a
+radical pair spectrum under these conditions could be due to
+either fast spin relaxation, motional averaging of the spectrum,
+and/or a short lifetime of the radical pair.""
+
+:);PKP & AvdE:
+https://doi.org/10.1021/jp110156w
+
+They also investigate the TPTZ analogue of the triad. The usual fluorescence quenching, UV-Vis titrations, TA with 1020nm peak (C60 anion).","Triad","2025-10-17T09:48:05.368Z-oqcjg0"
+"Phenothiazine (PTZ-py and TPTZ-py)","[R]C1=CC2C(C=C1)SC3=CC=CC=C3N2CC4=CC=NC=C4","Oxidation potential (vs. Fc) in 0.1MTBAP in o-DCB:
+Eox = 0.38V (PTZ)
+Eox = 0.32V (TPTZ);Not reported.;PKP & AvdE:
+https://doi.org/10.1021/jp110156w
+
+R = H is PTZ
+R = SCH3 is TPTZ (thio-phenothiazine)","Donor","2025-10-17T09:46:59.808Z-s8bm3z"
+"TTF-py -- AlTPP -- NDI-Ph-CO2","","Discussed by PKP & AvdE;Room temperature trESR of the SCRP reported by PKP & AvdE.;PKP & AvdE paper:
+https://doi.org/10.1002/chem.201202995
+
+The RP state proposed to be the lowest energy excited state. Long lived, apparently.","Triad","2025-10-17T09:32:39.606Z-9cya2i"
 "NDI-Ph-CO2","CCC(CCCC)CN(C1=O)C(C2=CC=C3C4=C(C(N(C5=CC=C(C([O])=O)C=C5)C3=O)=O)C=CC1=C42)=O","Sequential reduction potentials (vs. SCE):
 E = -0.55V, -1.00V
 
@@ -51,7 +84,9 @@ D = 891MHz & 899 MHz
 E/D = -0.15, +0.26;PKP & AvdE paper:
 https://doi.org/10.1021/jp911937d
 
-GM & DF measured triplet TA spectra","Bridge","2025-10-16T09:05:01.340Z-9r4ccg"
+Contains an axial benzoate.
+
+GM & DF measured triplet TA spectra.","Bridge","2025-10-16T09:05:01.340Z-9r4ccg"
 "Ferrocene Fc-CO-NH-Ph","O=C([Fc])NC1=CC=CC=C1","Not discussed.;Not discussed.;PKP & AvdE paper:
 https://doi.org/10.1021/jp911937d","Donor","2025-10-16T08:58:56.843Z-ig1bp7"
 "Fullerene C60","C1(C=C2C3=C4C5=C6C7=C8C9=C%10C(C%11=CC(C=C2C3=C%126)=C%12C7=C%11%10)=CC%13=C9C(C8=C%145)=C%15C%16=C%13)=C4C%14=C%15C%16=C1","Sequential reduction potentials (vs. Fc) in toluene/acetonitrile (5.4 : 1)
